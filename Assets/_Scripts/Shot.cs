@@ -1,12 +1,16 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class Shot : MonoBehaviour {
+public class Shot : MovingObject {
 
-    public float speed;
+    public Shot()
+    {
+        speed = 30f;
+    }
+
 	// Use this for initialization
 	void Start () {
-        
+            
     }
 
     void OnCollisionEnter2D(Collision2D collision)
@@ -19,24 +23,10 @@ public class Shot : MonoBehaviour {
 		}
     }
 
-    public void Movement(int direction)
+    public void Movement(DirectionType direction)
     {
-        //Set movement
-        switch (direction)
-        {
-            case 1:
-                GetComponent<Rigidbody2D>().velocity = Vector2.up * speed;
-                break;
-            case 2:
-                GetComponent<Rigidbody2D>().velocity = Vector2.down * speed;
-                break;
-            case 3:
-                GetComponent<Rigidbody2D>().velocity = Vector2.left * speed;
-                break;
-            case 4:
-                GetComponent<Rigidbody2D>().velocity = Vector2.right * speed;
-                break;
-        }
+        //Use Movingobject method
+        this.Movement(GetComponent<Rigidbody2D>(), direction);
     }
 	
 	// Update is called once per frame
