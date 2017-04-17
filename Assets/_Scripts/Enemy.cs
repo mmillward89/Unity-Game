@@ -4,10 +4,12 @@ using UnityEngine;
 
 public class Enemy : MovingObject {
 
+    private int enemyHealth;
 
     public Enemy()
     {
-        speed = 30f;
+        speed = 10f;
+        enemyHealth = 2;
     }
 
 	// Use this for initialization
@@ -30,9 +32,13 @@ public class Enemy : MovingObject {
     {
         switch (collision.gameObject.tag)
         {
-            case "Enemy":
-                Destroy(collision.gameObject);
-                Destroy(this.gameObject);
+            case "Shot":
+                enemyHealth--;
+                if (enemyHealth == 0)
+                {
+                    Destroy(this.gameObject);
+                    return;
+                }
                 break;
         }
     }

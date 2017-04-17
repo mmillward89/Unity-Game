@@ -3,6 +3,7 @@ using System.Collections;
 
 public class Shot : MovingObject {
 
+
     public Shot()
     {
         speed = 30f;
@@ -12,25 +13,25 @@ public class Shot : MovingObject {
 	void Start () {
             
     }
-
-    void OnCollisionEnter2D(Collision2D collision)
-    {
-		switch(collision.gameObject.tag) {
-			case "Enemy":
-				Destroy(collision.gameObject);
-				Destroy(this.gameObject);
-			break;
-		}
-    }
+    
+	// Update is called once per frame
+	void Update () {
+	
+	}
 
     public void Movement(DirectionType direction)
     {
         //Use Movingobject method
         this.Movement(GetComponent<Rigidbody2D>(), direction);
     }
-	
-	// Update is called once per frame
-	void Update () {
-	
-	}
+
+    void OnCollisionEnter2D(Collision2D collision)
+    {
+        switch (collision.gameObject.tag)
+        {
+            case "Enemy":
+                Destroy(this.gameObject);
+                break;
+        }
+    }
 }
