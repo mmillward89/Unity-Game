@@ -33,13 +33,18 @@ public class Enemy : MovingObject {
         switch (collision.gameObject.tag)
         {
             case "Shot":
-                enemyHealth--;
-                if (enemyHealth == 0)
-                {
-                    Destroy(this.gameObject);
-                    return;
-                }
+                DamageEnemy();
                 break;
+        }
+    }
+
+    private void DamageEnemy()
+    {
+        enemyHealth--;
+        if (enemyHealth == 0)
+        {
+            Destroy(this.gameObject);
+            return;
         }
     }
 }

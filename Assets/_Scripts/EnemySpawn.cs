@@ -26,7 +26,24 @@ public class EnemySpawn : MonoBehaviour {
 		if(Time.time > nextEnemyTime)
         {
             nextEnemyTime = Time.time + enemyRate;
-            (Instantiate(Enemy, transform.position + new Vector3(0, (float)rng.Next(-14, 15), 0), transform.rotation) as GameObject).GetComponent<Enemy>().Movement(DirectionType.Left);
+            switch(rng.Next(4))
+            {
+                case 0:
+                    (Instantiate(Enemy, transform.position + new Vector3((float)rng.Next(-16, 13), -17, 0), transform.rotation) as GameObject).GetComponent<Enemy>().Movement(DirectionType.Up);
+                    break;
+                case 1:
+                    (Instantiate(Enemy, transform.position + new Vector3((float)rng.Next(-16, 13), 17, 0), transform.rotation) as GameObject).GetComponent<Enemy>().Movement(DirectionType.Down);
+                    break;
+                case 2:
+                    (Instantiate(Enemy, transform.position + new Vector3(16, (float)rng.Next(-14, 15), 0), transform.rotation) as GameObject).GetComponent<Enemy>().Movement(DirectionType.Left);
+                    break;
+                case 3:
+                    (Instantiate(Enemy, transform.position + new Vector3(-19, (float)rng.Next(-14, 15), 0), transform.rotation) as GameObject).GetComponent<Enemy>().Movement(DirectionType.Right);
+                    break;
+                default:
+                    break;
+            }
+            
         }
 	}
     
