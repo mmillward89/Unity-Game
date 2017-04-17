@@ -1,51 +1,71 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-//Adding this allows us to access members of the UI namespace including Text.
 using UnityEngine.UI;
 
-
-public class Player : MonoBehaviour {
-
+public class Player : MonoBehaviour
+{
     private float speed;
     private Rigidbody2D playerRigidBody;
-    Vector2 movement;
+    Vector2 Movement;
 
-    public GameObject shot;
+    public GameObject Shot;
     public Transform shotSpawn;
-    private float nextFire;
+    private float nextFireTime;
     private float fireRate;
 
-
     // Use this for initialization
-    void Start () {
+    void Start()
+    {
         speed = 10;
-        fireRate = 0.25f;
+        fireRate = 0.1f;
+        nextFireTime = .5f;
         playerRigidBody = GetComponent<Rigidbody2D>();
 
     }
-	
-	void Update () {
-        //Shooting
-        if (Input.GetKeyDown(KeyCode.Space) && Time.time > nextFire)
+
+    void Update()
+    {
+        //shooting
+        if (Input.GetKeyDown(KeyCode.W) && Time.time > nextFireTime)
         {
-            nextFire = Time.time + fireRate;
-            Instantiate(shot, shotSpawn.position, shotSpawn.rotation);
+            nextFireTime = Time.time + fireRate;
+            shotSpawn.position = transform.position + new Vector3(0, 1.5f, 0);
+            (Instantiate(Shot, shotSpawn.position, shotSpawn.rotation) as GameObject).GetComponent<Shot>().Movement(1);
+        }
+        if (Input.GetKeyDown(KeyCode.S) && Time.time > nextFireTime)
+        {
+            nextFireTime = Time.time + fireRate;
+            shotSpawn.position = transform.position + new Vector3(0, -1.5f, 0);
+            (Instantiate(Shot, shotSpawn.position, shotSpawn.rotation) as GameObject).GetComponent<Shot>().Movement(2);
+        }
+        if (Input.GetKeyDown(KeyCode.A) && Time.time > nextFireTime)
+        {
+            nextFireTime = Time.time + fireRate;
+            shotSpawn.position = transform.position + new Vector3(-1.5f, 0, 0);
+            (Instantiate(Shot, shotSpawn.position, shotSpawn.rotation) as GameObject).GetComponent<Shot>().Movement(3);
+        }
+        if (Input.GetKeyDown(KeyCode.D) && Time.time > nextFireTime)
+        {
+            nextFireTime = Time.time + fireRate;
+            shotSpawn.position = transform.position + new Vector3(1.5f, 0, 0);
+            (Instantiate(Shot, shotSpawn.position, shotSpawn.rotation) as GameObject).GetComponent<Shot>().Movement(4);
         }
     }
 
     void FixedUpdate()
     {
-        //Basic movement
+        //Basic Movement
         float h = Input.GetAxisRaw("Horizontal");
         float v = Input.GetAxisRaw("Vertical");
-        movement.Set(h, v);
-        movement = movement.normalized * speed * Time.deltaTime;
-        playerRigidBody.MovePosition(new Vector2(transform.position.x, transform.position.y) + movement);
+        Movement.Set(h, v);
+        Movement = Movement.normalized * speed * Time.deltaTime;
+        playerRigidBody.MovePosition(new Vector2(transform.position.x, transform.position.y) + Movement);
     }
 
     void OnCollisionEnter2D(Collision2D collision)
     {
         GetComponent<Rigidbody2D>().freezeRotation = true;
     }
+
 }
