@@ -5,88 +5,73 @@ using UnityEngine.UI;
 
 public class Player : MonoBehaviour
 {
-    private float speed;
-    private Rigidbody2D playerRigidBody;
-    Vector2 Movement;
+	public bool visible;
 
-    public GameObject Shot;
-    public Transform shotSpawn;
-    private int playerHealth;
-    private float nextFireTime;
-    private float fireRate;
+	private float speed;
+	private Rigidbody2D playerRigidBody;
+	Vector2 Movement;
 
-    // Use this for initialization
-    void Start()
-    {
-        playerHealth = 50;
-        speed = 10;
-        fireRate = 0.1f;
-        nextFireTime = .5f;
-        playerRigidBody = GetComponent<Rigidbody2D>();
+	public GameObject Shot;
+	public Transform shotSpawn;
+	private int playerHealth;
 
-    }
+	// Use this for initialization
+	void Start()
+	{
+		playerHealth = 50;
+		speed = 10;
+		playerRigidBody = GetComponent<Rigidbody2D>();
+		visible = true;
 
-    void Update()
-    {
-        //shooting
-        if (Input.GetKeyDown(KeyCode.W) && Time.time > nextFireTime)
-        {
-            nextFireTime = Time.time + fireRate;
-            shotSpawn.position = transform.position + new Vector3(0, 1.5f, 0);
-            (Instantiate(Shot, shotSpawn.position, shotSpawn.rotation) as GameObject).GetComponent<Shot>().Movement(DirectionType.Up);
-        }
-        if (Input.GetKeyDown(KeyCode.S) && Time.time > nextFireTime)
-        {
-            nextFireTime = Time.time + fireRate;
-            shotSpawn.position = transform.position + new Vector3(0, -1.5f, 0);
-            (Instantiate(Shot, shotSpawn.position, shotSpawn.rotation) as GameObject).GetComponent<Shot>().Movement(DirectionType.Down);
-        }
-        if (Input.GetKeyDown(KeyCode.A) && Time.time > nextFireTime)
-        {
-            nextFireTime = Time.time + fireRate;
-            shotSpawn.position = transform.position + new Vector3(-1.5f, 0, 0);
-            (Instantiate(Shot, shotSpawn.position, shotSpawn.rotation) as GameObject).GetComponent<Shot>().Movement(DirectionType.Left);
-        }
-        if (Input.GetKeyDown(KeyCode.D) && Time.time > nextFireTime)
-        {
-            nextFireTime = Time.time + fireRate;
-            shotSpawn.position = transform.position + new Vector3(1.5f, 0, 0);
-            (Instantiate(Shot, shotSpawn.position, shotSpawn.rotation) as GameObject).GetComponent<Shot>().Movement(DirectionType.Right);
-        }
-    }
+	}
 
-    void FixedUpdate()
-    {
-        //Basic Movement
-        float h = Input.GetAxisRaw("Horizontal");
-        float v = Input.GetAxisRaw("Vertical");
-        Movement.Set(h, v);
-        Movement = Movement.normalized * speed * Time.deltaTime;
-        playerRigidBody.MovePosition(new Vector2(transform.position.x, transform.position.y) + Movement);
-    }
+	void Update()
+	{
+		checkVisibility();
+	}
 
-    void OnCollisionEnter2D(Collision2D collision)
-    {
-        GetComponent<Rigidbody2D>().freezeRotation = true;
+	public void checkVisibility()
+	{
+		if (Input.GetKeyUp(KeyCode.Joystick1Button0))
+		{
+			visible = !visible;
+		}
+	}
 
-        switch (collision.gameObject.tag)
-        {
-            case "Enemy":
-                Destroy(collision.gameObject);
-                DamagePlayer();
-                break;
-        }
-    }
+	void FixedUpdate()
+	{
+		checkMovement();
+	}
 
-    private void DamagePlayer()
-    {
-        if(playerHealth == 10)
-        {
-            Destroy(this.gameObject);
-            return;
-        }
+	public void checkMovement()
+	{
+		float h = Input.GetAxisRaw("Horizontal");
+		float v = Input.GetAxisRaw("Vertical");
+		Movement.Set(h, v);
+		Movement = Movement.normalized * speed * Time.deltaTime;
+		playerRigidBody.MovePosition(new Vector2(transform.position.x, transform.position.y) + Movement);
+	}
 
-        playerHealth = playerHealth - 10;
-    }
+	void OnCollisionEnter2D(Collision2D collision)
+	{
+		GetComponent<Rigidbody2D>().freezeRotation = true;
+
+		switch (collision.gameObject.tag)
+		{
+			case "Enemy":
+				break;
+		}
+	}
+
+	private void DamagePlayer()
+	{
+		if (playerHealth == 10)
+		{
+			Destroy(this.gameObject);
+			return;
+		}
+
+		playerHealth = playerHealth - 10;
+	}
 
 }
