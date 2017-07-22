@@ -5,14 +5,23 @@ using UnityEngine;
 public class Enemy : MovingObject {
 
     private int enemyHealth;
+
+	public Sprite SeenPlayerSprite;
+	public Sprite StandardSprite;
+	private SpriteRenderer spriteRenderer;
+
 	public GameObject playerGameObj;
 	private Player playerObj;
+	private bool playerSeen;
 
 	// Use this for initialization
 	void Start () {
+		playerObj = playerGameObj.GetComponent<Player>();
+		spriteRenderer = gameObject.GetComponent<SpriteRenderer>();
+
 		speed = 10f;
 		enemyHealth = 2;
-		playerObj = playerGameObj.GetComponent<Player>();
+		playerSeen = false;
 	}
 	
 	// Update is called once per frame
@@ -26,16 +35,42 @@ public class Enemy : MovingObject {
         this.Movement(GetComponent<Rigidbody2D>(), direction);
     }
 
-	public void checkPlayerVisibility()
+	public bool checkPlayerVisibility()
 	{
-		if((Vector3.Distance(playerObj.transform.position, transform.position)) < 15f)
+		bool withinDistance = false;
+		bool withinSight = false;
+
+		//Visibility check is also done in game manager but doubling up can't hurt.
+		if (playerObj.Visible)
 		{
-			Vector3 targetDir = playerObj.transform.position - transform.position;
-			if(Vector3.Angle(targetDir, -transform.right) <= 75.0f && playerObj.visible)
+			withinDistance = Vector3.Distance(playerObj.transform.position, transform.position) < 15f;
+			if (withinDistance)
 			{
-				var test = "";
+				//If they're close enough are they in the vision cone
+				Vector3 targetDir = playerObj.transform.position - transform.position;
+				withinSight = Vector3.Angle(targetDir, -transform.right) <= 75.0f;
+				if (!playerSeen && withinSight)
+				{
+					//If they are and they weren't already seen
+					spriteRenderer.sprite = SeenPlayerSprite;
+					playerSeen = true;
+				};
+			};
+			
+			if (playerSeen && (!withinDistance || !withinSight))
+			{
+				//Player has moved out of vision
+				playerSeen = false;
+				spriteRenderer.sprite = StandardSprite;
 			}
 		}
+		else
+		{
+			//Player is never seen when invisible, regardless of position
+			playerSeen = false;
+			spriteRenderer.sprite = StandardSprite;
+		}
+		return playerSeen;
 	}
 
 

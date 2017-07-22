@@ -5,7 +5,7 @@ using UnityEngine.UI;
 
 public class Player : MonoBehaviour
 {
-	public bool visible;
+	public bool Visible { get; set; }
 
 	private float speed;
 	private Rigidbody2D playerRigidBody;
@@ -21,35 +21,18 @@ public class Player : MonoBehaviour
 		playerHealth = 50;
 		speed = 10;
 		playerRigidBody = GetComponent<Rigidbody2D>();
-		visible = true;
+		Visible = true;
 
 	}
 
 	void Update()
 	{
-		checkVisibility();
-	}
-
-	public void checkVisibility()
-	{
-		if (Input.GetKeyUp(KeyCode.Joystick1Button0))
-		{
-			visible = !visible;
-		}
+		checkVisibilityInput();
 	}
 
 	void FixedUpdate()
 	{
 		checkMovement();
-	}
-
-	public void checkMovement()
-	{
-		float h = Input.GetAxisRaw("Horizontal");
-		float v = Input.GetAxisRaw("Vertical");
-		Movement.Set(h, v);
-		Movement = Movement.normalized * speed * Time.deltaTime;
-		playerRigidBody.MovePosition(new Vector2(transform.position.x, transform.position.y) + Movement);
 	}
 
 	void OnCollisionEnter2D(Collision2D collision)
@@ -61,6 +44,23 @@ public class Player : MonoBehaviour
 			case "Enemy":
 				break;
 		}
+	}
+
+	private void checkVisibilityInput()
+	{
+		if (Input.GetKeyUp(KeyCode.Joystick1Button0))
+		{
+			Visible = !Visible;
+		}
+	}
+
+	public void checkMovement()
+	{
+		float h = Input.GetAxisRaw("Horizontal");
+		float v = Input.GetAxisRaw("Vertical");
+		Movement.Set(h, v);
+		Movement = Movement.normalized * speed * Time.deltaTime;
+		playerRigidBody.MovePosition(new Vector2(transform.position.x, transform.position.y) + Movement);
 	}
 
 	private void DamagePlayer()
